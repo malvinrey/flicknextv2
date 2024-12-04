@@ -1,0 +1,31 @@
+name: flicknext
+description: A new Flutter project.
+
+# The following defines the version and build number for your application.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  font_awesome_flutter: ^10.5.0
+  video_player: ^2.4.5
+  youtube_player_flutter: ^9.1.1
+  http: ^1.2.2
+  cached_network_image: ^3.2.0
+  webview_flutter: ^4.10.0
+  flutter_web_plugins: # Add this only if you are building for web
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/videos/
+    - assets/videos/titanic.mp4
