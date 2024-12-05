@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
 import 'pages/login_page.dart';
 import 'pages/register_page.dart';
 import 'pages/home_page.dart';
@@ -8,11 +9,13 @@ import 'pages/reset_password.dart';
 import 'pages/lupa_password.dart';
 import 'pages/cobacoba.dart';
 import 'pages/video_test.dart';
+import 'pages/watchlist_page.dart';
 
 void main() {
-  // Ensure proper initialization for WebView and PathUrlStrategy
+  // Pastikan PathUrlStrategy digunakan agar URL bisa berfungsi dengan benar di web
   WidgetsFlutterBinding.ensureInitialized();
-  setUrlStrategy(PathUrlStrategy()); // Enable URL handling for web compatibility
+  setUrlStrategy(
+      PathUrlStrategy()); // Enable URL handling for web compatibility
   runApp(MyApp());
 }
 
@@ -20,20 +23,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // Hide debug banner
+      debugShowCheckedModeBanner: false, // Menyembunyikan banner debug
       title: 'Flicknext',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(), // Set default home page
+      initialRoute: '/', // Menentukan rute default
       routes: {
-        '/login': (context) => LoginPage(), // Route for LoginPage
-        '/register': (context) => RegisterPage(), // Route for RegisterPage
-        '/sign-in': (context) => SignInScreen(), // Route for SignInScreen
-        '/reset-password': (context) => ResetPasswordPage(), // Route for ResetPasswordPage
-        '/forgot-password': (context) => LupaPasswordPage(), // Route for ForgotPassword
-        '/cobacoba': (context) => Cobacoba(), // Route for Cobacoba with WebView
-        '/videotest': (context) => VideoTestApp(), // Route for Cobacoba with WebView
+        '/': (context) => HomePage(), // Rute untuk halaman utama
+        '/login': (context) => LoginPage(),
+        '/register': (context) => RegisterPage(),
+        '/sign-in': (context) => SignInScreen(),
+        '/reset-password': (context) => ResetPasswordPage(),
+        '/forgot-password': (context) => LupaPasswordPage(),
+        '/cobacoba': (context) => Cobacoba(),
+        '/videotest': (context) => VideoTestApp(),
+        '/watchlist': (context) => WatchlistPage(), // Rute untuk WatchlistPage
       },
     );
   }
