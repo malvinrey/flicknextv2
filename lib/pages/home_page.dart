@@ -3,6 +3,7 @@ import 'package:video_player/video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import '../widgets/header_main.dart';
 import '../widgets/footer_main.dart';
+import '../widgets/sidebar.dart'; // Importing the sidebar widget
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,7 +12,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late VideoPlayerController _controller;
+  int _selectedIndex = 0; // Track the selected sidebar index
+  late SideBarAnimatedState _sideBarAnimatedState;
 
+  // Sample data for "Continue Watching" and "Latest Movies"
   final List<Map<String, String>> continueWatchingMovies = [
     {
       "title": "Avatar",
@@ -73,6 +77,7 @@ class _HomePageState extends State<HomePage> {
       }).catchError((error) {
         print("Error loading video: $error");
       });
+    _sideBarAnimatedState = SideBarAnimatedState(); // Initialize the SideBarAnimatedState
   }
 
   @override
@@ -91,57 +96,94 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // Handle sidebar item tap
+  void _onSidebarItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index; // Update the selected index
+      // You can navigate or change the displayed content based on the index
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: Header(),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Video Section
-            Container(
-              height: MediaQuery.of(context).size.height * 0.35,
-              color: Colors.black,
-              child: Stack(
+      appBar: Header(
+        sideBarAnimatedState: _sideBarAnimatedState, // Pass the SideBarAnimatedState instance
+      ),
+      body: Row(
+        children: [
+          // Sidebar
+          SideBarAnimated(
+            onTap: _onSidebarItemTapped,
+            widthSwitch: 700.0,
+            mainLogoImage: 'assets/logo.png',
+            sidebarItems: [
+              SideBarItem(
+                iconSelected: Icons.home_rounded,
+                iconUnselected: Icons.home_outlined,
+                text: 'Home',
+                selectedIndex: _selectedIndex,
+              ),
+              SideBarItem(
+                iconSelected: Icons.settings_rounded,
+                iconUnselected: Icons.settings_outlined,
+                text: 'Settings',
+                selectedIndex: _selectedIndex,
+              ),
+              // Add more items as needed
+            ],
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  AspectRatio(
-                    aspectRatio: 16 / 9,
-                    child: VideoPlayer(_controller),
-                  ),
-                  Center(
-                    child: IconButton(
-                      icon: Icon(
-                        _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                        color: Colors.white,
-                        size: 60,
-                      ),
-                      onPressed: _togglePlayPause,
+                  // Video Section
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    color: Colors.black,
+                    child: Stack(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: 16 / 9,
+                          child: VideoPlayer(_controller),
+                        ),
+                        Center(
+                          child: IconButton(
+                            icon: Icon(
+                              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: Colors.white,
+                              size: 60,
+                            ),
+                            onPressed: _togglePlayPause,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
+
+                  // Continue Watching Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 0),
+                    child: SectionTitle(title: "Continue Watching"),
+                  ),
+                  MovieList(movies: continueWatchingMovies),
+
+                  // Latest Movies Section
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: SectionTitle(title: "Latest Movies"),
+                  ),
+                  MovieGrid(movies: latestMovies),
+
+                  // Footer Section
+                  Footer(),
                 ],
               ),
             ),
-
-            // Continue Watching Section
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 0), // Control spacing above and below
-              child: SectionTitle(title: "Continue Watching"),
-            ),
-            MovieList(movies: continueWatchingMovies),
-
-            // Latest Movies Section
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0), // Control spacing
-              child: SectionTitle(title: "Latest Movies"),
-            ),
-            MovieGrid(movies: latestMovies),
-
-            // Footer Section
-            Footer(),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -235,7 +277,7 @@ class SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0), // Padding for section titles
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
       child: Text(
         title,
         style: TextStyle(

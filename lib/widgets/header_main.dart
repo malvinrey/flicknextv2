@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
+import 'sidebar.dart';
 
-class Header extends StatelessWidget implements PreferredSizeWidget {
+class Header extends StatefulWidget implements PreferredSizeWidget {
+  final SideBarAnimatedState sideBarAnimatedState;
+
+  const Header({
+    Key? key,
+    required this.sideBarAnimatedState,
+  }) : super(key: key);
+
   @override
   Size get preferredSize => const Size.fromHeight(60);
 
+  @override
+  _HeaderState createState() => _HeaderState();
+}
+
+class _HeaderState extends State<Header> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -15,20 +28,26 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
         child: Row(
           children: [
             // Menu Icon
-            Icon(Icons.menu, color: Colors.white),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  widget.sideBarAnimatedState.toggleVisibility();
+                });
+              },
+              child: Icon(Icons.menu, color: Colors.white),
+            ),
             SizedBox(width: 16),
 
             // Logo
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Container(
-                //color: Colors.yellow,
                 padding: const EdgeInsets.all(4.0),
                 child: Image.asset(
-                  '../assets/images/logo.png', // Path ke logo
-                  height: 40, // Tinggi logo
-                  width: 40, // Lebar logo (opsional, agar proporsional)
-                  fit: BoxFit.contain, // Menjaga rasio aspek
+                  '../assets/images/logo.png',
+                  height: 40,
+                  width: 40,
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
@@ -47,7 +66,7 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
                     hintText: "Enter movie...",
                     border: InputBorder.none,
                     contentPadding:
-                        EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     hintStyle: TextStyle(fontSize: 14),
                   ),
                 ),
