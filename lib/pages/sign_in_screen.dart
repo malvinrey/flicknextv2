@@ -1,40 +1,53 @@
 import 'package:flutter/material.dart';
 
-class SignInScreen extends StatefulWidget {
+class SignUpScreen extends StatefulWidget {
   @override
-  _SignInScreenState createState() => _SignInScreenState();
+  _SignUpScreenState createState() => _SignUpScreenState();
 }
 
-class _SignInScreenState extends State<SignInScreen> {
-  // Controller untuk input email dan password
+class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
-  // Simpan data pengguna lokal
   List<Map<String, String>> users = [
     {'email': 'user@example.com', 'password': '123456'},
   ];
 
-  void signIn() {
-    String email = emailController.text.trim(); // Menghapus spasi awal/akhir
+  void signUp() {
+    String name = nameController.text.trim();
+    String email = emailController.text.trim();
     String password = passwordController.text;
+    String confirmPassword = confirmPasswordController.text;
 
-    // Cari pengguna yang sesuai
-    final Map<String, String>? user =
-        users.cast<Map<String, String>?>().firstWhere(
-              (user) => user!['email'] == email && user['password'] == password,
-              orElse: () => null,
-            );
+    final existingUser = users.firstWhere(
+      (user) => user['email'] == email,
+      orElse: () => {},
+    );
 
-    if (user != null) {
-      // Login berhasil
-      Navigator.pushNamed(context, '/home');
-    } else {
-      // Login gagal
+    if (existingUser.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Email atau password salah')),
+        SnackBar(content: Text('Email sudah terdaftar')),
       );
+      return;
     }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password dan konfirmasi password tidak cocok')),
+      );
+      return;
+    }
+
+    users.add({'email': email, 'password': password});
+
+    // Navigating to the profile page and passing the name
+    Navigator.pushReplacementNamed(
+      context,
+      '/profile',  // Route to profile page
+      arguments: name, // Pass name to the profile page
+    );
   }
 
   @override
@@ -46,19 +59,19 @@ class _SignInScreenState extends State<SignInScreen> {
           hoverColor: Colors.grey[800],
           borderRadius: BorderRadius.circular(40),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pop(context);  // Go back to previous screen
           },
           child: Icon(
             Icons.arrow_back,
             color: Colors.white,
           ),
         ),
-        title: Text('Sign In'),
-        backgroundColor: Colors.black, // Warna latar belakang hitam
+        title: Text('Sign Up'),
+        backgroundColor: Colors.black,
         titleTextStyle: TextStyle(
-          color: Colors.white, // Warna teks putih
-          fontSize: 20, // Ukuran font teks
-          fontWeight: FontWeight.bold, // Menebalkan teks
+          color: Colors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
         ),
       ),
       body: Padding(
@@ -66,33 +79,15 @@ class _SignInScreenState extends State<SignInScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Menambahkan Logo dan Nama Aplikasi
-            Column(
-              children: [
-                ClipRRect(
-                  borderRadius:
-                      BorderRadius.circular(8), // Rounded corners for logo
-                  child: Image.asset(
-                    'assets/images/logo.png', // Ganti dengan path logo Anda
-                    height: 100, // Atur tinggi logo
-                    width: 100, // Atur lebar logo
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                SizedBox(height: 16), // Jarak antara logo dan nama aplikasi
-                Text(
-                  'Flick NEXT', // Ganti dengan nama aplikasi Anda
-                  style: TextStyle(
-                    fontSize: 24, // Ukuran font nama aplikasi
-                    fontWeight: FontWeight.bold, // Menebalkan nama aplikasi
-                  ),
-                ),
-                SizedBox(
-                    height: 32), // Jarak antara nama aplikasi dan form login
-              ],
+            // Form Fields for Registration
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'Nama',
+                border: OutlineInputBorder(),
+              ),
             ),
-
-            // Form Login
+            SizedBox(height: 16),
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
@@ -104,30 +99,36 @@ class _SignInScreenState extends State<SignInScreen> {
             SizedBox(height: 16),
             TextField(
               controller: passwordController,
-              obscureText: true, // Agar password tidak terlihat
+              obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
                 border: OutlineInputBorder(),
               ),
             ),
             SizedBox(height: 16),
+            TextField(
+              controller: confirmPasswordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Confirm Password',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16),
+
+            // Sign Up Button
             ElevatedButton(
-              onPressed: signIn,
-              child: Text('Sign In'),
+              onPressed: signUp,
+              child: Text('Sign Up'),
             ),
             SizedBox(height: 5),
-            TextButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/forgot-password');
-              },
-              child: Text('Forgot Password?'),
-            ),
 
+            // Navigation to login page
             TextButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/register');
+                Navigator.pushNamed(context, '/login');
               },
-              child: Text('Belum punya akun? Register'),
+              child: Text('Already have an account? Sign In'),
             ),
           ],
         ),

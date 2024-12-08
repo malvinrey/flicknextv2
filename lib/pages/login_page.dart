@@ -1,3 +1,4 @@
+// login_page.dart
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -36,7 +37,7 @@ class LoginPage extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                // Pindah ke halaman daftar
+                // Navigate to register page
                 Navigator.pushReplacementNamed(context, '/register');
               },
               child: Text('Don\'t have an account? Register'),

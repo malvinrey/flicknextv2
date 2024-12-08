@@ -74,13 +74,22 @@ class _HeaderState extends State<Header> {
             ),
             SizedBox(width: 16),
 
-            // Sign In and Icon
-            Text(
-              "Sign In",
-              style: TextStyle(color: Colors.white, fontSize: 14),
+            GestureDetector(
+              onTap: () {
+                // Navigate to LoginPage using named route
+                Navigator.pushNamed(context, '/login');
+              },
+              child: Row(
+                children: [
+                  Text(
+                    "Login",
+                    style: TextStyle(color: Colors.white, fontSize: 14),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.notifications, color: Colors.yellow, size: 24),
+                ],
+              ),
             ),
-            SizedBox(width: 8),
-            Icon(Icons.notifications, color: Colors.yellow, size: 24),
           ],
         ),
       ),

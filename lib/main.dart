@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'pages/login_page.dart';
-import 'pages/register_page.dart';
 import 'pages/home_page.dart';
 import 'pages/sign_in_screen.dart';
 import 'pages/reset_password.dart';
@@ -32,8 +31,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => HomePage(), // Rute untuk halaman utama
         '/login': (context) => LoginPage(),
-        '/register': (context) => RegisterPage(),
-        '/sign-in': (context) => SignInScreen(),
+        '/register': (context) => SignUpScreen(),  // Update this route
         '/reset-password': (context) => ResetPasswordPage(),
         '/forgot-password': (context) => LupaPasswordPage(),
         '/cobacoba': (context) => Cobacoba(),
