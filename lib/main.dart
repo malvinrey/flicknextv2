@@ -3,12 +3,14 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
-import 'pages/sign_in_screen.dart';
+import 'pages/sign_up_screen.dart';
 import 'pages/reset_password.dart';
 import 'pages/lupa_password.dart';
 import 'pages/cobacoba.dart';
 import 'pages/video_test.dart';
 import 'pages/watchlist_page.dart';
+import 'pages/profile_page.dart';  // Tambahkan import untuk ProfilePage
+
 
 void main() {
   // Pastikan PathUrlStrategy digunakan agar URL bisa berfungsi dengan benar di web
@@ -37,6 +39,8 @@ class MyApp extends StatelessWidget {
         '/cobacoba': (context) => Cobacoba(),
         '/videotest': (context) => VideoTestApp(),
         '/watchlist': (context) => WatchlistPage(), // Rute untuk WatchlistPage
+        '/profile': (context) => ProfilePage(), // Rute untuk halaman profil
+
       },
     );
   }

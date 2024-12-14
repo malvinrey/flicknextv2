@@ -38,7 +38,7 @@ class _HeaderState extends State<Header> {
             ),
             SizedBox(width: 16),
 
-            // Logo
+            // Logonya
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Container(
@@ -69,6 +69,27 @@ class _HeaderState extends State<Header> {
                     EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     hintStyle: TextStyle(fontSize: 14),
                   ),
+                ),
+              ),
+            ),
+            SizedBox(width: 16),
+
+            // Profile Icon (Menggunakan Icon)
+            GestureDetector(
+              onTap: () {
+                // Navigasi ke halaman profil
+                Navigator.pushNamed(context, '/profile'); // Rute ke halaman profile
+              },
+              child: Container(
+                padding: EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black, // Background ikon profil
+                ),
+                child: Icon(
+                  Icons.person, // Ikon profil
+                  color: Colors.white,
+                  size: 28,
                 ),
               ),
             ),

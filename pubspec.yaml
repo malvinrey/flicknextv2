@@ -28,5 +28,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    - assets/images/profile_pic.png
     - assets/videos/
     - assets/videos/titanic.mp4
