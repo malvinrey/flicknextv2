@@ -30,13 +30,11 @@ class _HeaderState extends State<Header> {
             // Menu Icon
             GestureDetector(
               onTap: () {
-                setState(() {
-                  widget.sideBarAnimatedState.toggleVisibility();
-                });
+                widget.sideBarAnimatedState.toggleVisibility();  // Toggle sidebar visibility
               },
-              child: Icon(Icons.menu, color: Colors.white),
+              child: const Icon(Icons.menu, color: Colors.white),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
 
             // Logo
             ClipRRect(
@@ -51,9 +49,9 @@ class _HeaderState extends State<Header> {
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
 
-            // Search Field (Selalu Tampil)
+            // Search Field
             Expanded(
               child: Container(
                 height: 40,
@@ -65,21 +63,20 @@ class _HeaderState extends State<Header> {
                   decoration: InputDecoration(
                     hintText: "Enter movie...",
                     border: InputBorder.none,
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                    hintStyle: TextStyle(fontSize: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    hintStyle: const TextStyle(fontSize: 14),
                   ),
                 ),
               ),
             ),
-            SizedBox(width: 16),
+            const SizedBox(width: 16),
 
+            // Login Section
             GestureDetector(
               onTap: () {
-                // Navigate to LoginPage using named route
                 Navigator.pushNamed(context, '/login');
               },
-              child: Row(
+              child: const Row(
                 children: [
                   Text(
                     "Login",
