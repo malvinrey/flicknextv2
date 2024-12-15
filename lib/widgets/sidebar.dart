@@ -1,99 +1,103 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';  
 
-class SideBarAnimated extends StatefulWidget {
-  final Function(int) onTap;
-  final double widthSwitch;
-  final String mainLogoImage;
-  final List<SideBarItem> sidebarItems;
+class SideBarAnimated extends StatefulWidget {  
+  final Function(int) onTap;  
+  final double widthSwitch;  
+  final String mainLogoImage;  
+  final List<SideBarItem> sidebarItems;  
 
-  const SideBarAnimated({
-    Key? key,
-    required this.onTap,
-    required this.widthSwitch,
-    required this.mainLogoImage,
-    required this.sidebarItems,
-  }) : super(key: key);
+  const SideBarAnimated({  
+    Key? key,  
+    required this.onTap,  
+    required this.widthSwitch,  
+    required this.mainLogoImage,  
+    required this.sidebarItems,  
+  }) : super(key: key);  
 
-  @override
-  SideBarAnimatedState createState() => SideBarAnimatedState();
-}
+  @override  
+  SideBarAnimatedState createState() => SideBarAnimatedState();  
+}  
 
-class SideBarAnimatedState extends State<SideBarAnimated> {
-  bool _isVisible = true; // Sidebar is visible by default for testing
+class SideBarAnimatedState extends State<SideBarAnimated> {  
+  bool _isVisible = true; // Sidebar is visible by default  
+  int _selectedIndex = 0; // Track the selected index for sidebar items  
 
-  // Toggle visibility - not needed for testing but kept for later functionality
-  void toggleVisibility() {
-    setState(() {
-      _isVisible = !_isVisible;
-    });
-  }
+  void toggleVisibility() {  
+    setState(() {  
+      _isVisible = !_isVisible;  
+    });  
+  }  
 
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double sidebarWidth = screenWidth * widget.widthSwitch; // Sidebar width
+  @override  
+  Widget build(BuildContext context) {  
+    double screenWidth = MediaQuery.of(context).size.width;  
+    double sidebarWidth = screenWidth * widget.widthSwitch; // Sidebar width  
 
-    return Positioned(
-      left: _isVisible ? 0 : -sidebarWidth,  // Sidebar is visible by default
-      top: 0,
-      bottom: 0,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: sidebarWidth,
-        color: Colors.blueGrey.withOpacity(0.8), // Sidebar background color
-        child: Column(
-          children: [
-            // Logo Section (centered in the sidebar)
-            Center(
-              child: Image.asset(
-                widget.mainLogoImage,
-                height: 100,
-                width: 100,
-              ),
-            ),
-            const Divider(color: Colors.white70),
+    return Positioned(  
+      left: _isVisible ? 0 : -sidebarWidth,  
+      top: 0,  
+      bottom: 0,  
+      child: AnimatedContainer(  
+        duration: const Duration(milliseconds: 300),  
+        width: sidebarWidth,  
+        color: Colors.blueGrey.withOpacity(0.8), // Sidebar background color  
+        child: Column(  
+          mainAxisSize: MainAxisSize.max,  
+          children: [  
+            // Logo Section (centered in the sidebar)  
+            Center(  
+              child: Image.asset(  
+                widget.mainLogoImage,  
+                height: 40, // Reduced logo size  
+                width: 40,  
+              ),  
+            ),  
+            const Divider(color: Colors.white70),  
+            Expanded(  
+              child: ListView.builder(  
+                itemCount: widget.sidebarItems.length,  
+                itemBuilder: (context, index) {  
+                  final item = widget.sidebarItems[index];  
+                  return GestureDetector(  
+                    onTap: () {  
+                      setState(() {  
+                        _selectedIndex = index; // Update the selected index dynamically  
+                      });  
+                      widget.onTap(index); // Notify parent widget  
+                    },  
+                    child: Container(  
+                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16), // Padding for touch area  
+                      child: Row(  
+                        children: [  
+                          Icon(  
+                            _selectedIndex == index  
+                                ? item.iconSelected  
+                                : item.iconUnselected,  
+                            color: Colors.white,  
+                            size: 30,  
+                          ),  
+                          const SizedBox(width: 16), // Space between icon and text  
+                          // Removed Text  
+                        ],  
+                      ),  
+                    ),  
+                  );  
+                },  
+              ),  
+            ),  
+          ],  
+        ),  
+      ),  
+    );  
+  }  
+}  
 
-            // Sidebar Items (Only icons centered)
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.sidebarItems.length,
-                itemBuilder: (context, index) {
-                  final item = widget.sidebarItems[index];
-                  return ListTile(
-                    contentPadding: const EdgeInsets.symmetric(vertical: 10), // Adjust space between items
-                    leading: Container(
-                      width: double.infinity,  // Take up full width
-                      alignment: Alignment.center,  // Center the icon horizontally
-                      child: Icon(
-                        index == item.selectedIndex
-                            ? item.iconSelected
-                            : item.iconUnselected,
-                        color: Colors.white,
-                        size: 30, // Icon size adjusted for better visibility
-                      ),
-                    ),
-                    onTap: () {
-                      widget.onTap(index);  // Notify parent widget
-                    },
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+class SideBarItem {  
+  final IconData iconSelected;  
+  final IconData iconUnselected;  
 
-class SideBarItem {
-  final IconData iconSelected;
-  final IconData iconUnselected;
-  final int selectedIndex;
-
-  SideBarItem({
-    required this.iconSelected,
-    required this.iconUnselected,
-    this.selectedIndex = 0,  // Default value for selected index
-  });
+  SideBarItem({  
+    required this.iconSelected,  
+    required this.iconUnselected,  
+  });  
 }
