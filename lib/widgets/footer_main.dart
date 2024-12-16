@@ -80,12 +80,12 @@ class Footer extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           print("Icon tapped"); // Handle icon click
-        },
+        },  
         child: Container(
           padding: const EdgeInsets.all(8), // Padding around each icon
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.1), // Light background for icons
+            color: Colors.white.withAlpha((255 * 0.1).toInt()), // Light background for icons
           ),
           child: Icon(
             icon,

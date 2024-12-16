@@ -16,7 +16,7 @@ class HomePageState extends State<HomePage> {
   late VideoPlayerController _controller;
   final PageController _pageController = PageController();
   final SideMenuController _sideMenuController = SideMenuController();
-  bool _isCollapsed = false; // Track sidebar collapsed state
+  bool _isCollapsed = true; // Track sidebar collapsed state
 
   final List<Map<String, String>> continueWatchingMovies = [
     {"title": "Avatar", "image": "https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg"},
@@ -75,6 +75,8 @@ class HomePageState extends State<HomePage> {
             style: SideMenuStyle(
               backgroundColor: Colors.grey[900],
               itemBorderRadius: BorderRadius.circular(8),
+              compactSideMenuWidth: 65, // Lebar sidebar ketika collapse
+              openSideMenuWidth: 150,   // Lebar sidebar ketika expand
               displayMode: _isCollapsed ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
               selectedColor: Colors.white,
               unselectedTitleTextStyle: const TextStyle(color: Colors.white70),
@@ -98,14 +100,7 @@ class HomePageState extends State<HomePage> {
                 },
               ),
               SideMenuItem(
-                title: 'Cart',
-                icon: const Icon(Icons.shopping_cart, color: Colors.yellow),
-                onTap: (index, _) {
-                  _sideMenuController.changePage(index);
-                },
-              ),
-              SideMenuItem(
-                title: _isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar',
+                title: _isCollapsed ? 'Expand Sidebar' : 'Collapse',
                 icon: Icon(
                   _isCollapsed ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
                   color: Colors.yellow,
@@ -117,12 +112,19 @@ class HomePageState extends State<HomePage> {
             ],
           ),
           Expanded(
-            child: PageView(
-              controller: _pageController,
+            child: Column(
               children: [
-                _homePageContent(),
-                const Center(child: Text('Settings Page', style: TextStyle(color: Colors.white))),
-                const Center(child: Text('Cart Page', style: TextStyle(color: Colors.white))),
+                Header(isSidebarExpanded: !_isCollapsed), // Header menerima status sidebar
+                Expanded(
+                  child: PageView(
+                    controller: _pageController,
+                    children: [
+                      _homePageContent(),
+                      const Center(child: Text('Settings Page', style: TextStyle(color: Colors.white))),
+                      const Center(child: Text('Cart Page', style: TextStyle(color: Colors.white))),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
@@ -136,35 +138,35 @@ class HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Header(),
           Container(
-            height: 300,
-            color: Colors.black,
-            child: Stack(
-              children: [
-                AspectRatio(
-                  aspectRatio: 16 / 9,
-                  child: VideoPlayer(_controller),
-                ),
-                Center(
-                  child: IconButton(
-                    icon: Icon(
-                      _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white,
-                      size: 60,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        if (_controller.value.isPlaying) {
-                          _controller.pause();
-                        } else {
-                          _controller.play();
-                        }
-                      });
-                    },
-                  ),
-                ),
-              ],
+            width: double.infinity,
+            child: AspectRatio(
+              aspectRatio: 16 / 9, // Maintain video player ratio
+              child: _controller.value.isInitialized
+                  ? Stack(
+                      children: [
+                        VideoPlayer(_controller),
+                        Center(
+                          child: IconButton(
+                            icon: Icon(
+                              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: Colors.white,
+                              size: 60,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                if (_controller.value.isPlaying) {
+                                  _controller.pause();
+                                } else {
+                                  _controller.play();
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    )
+                  : const Center(child: CircularProgressIndicator()),
             ),
           ),
           const SectionTitle(title: "Continue Watching"),
@@ -178,6 +180,27 @@ class HomePageState extends State<HomePage> {
   }
 }
 
+class SectionTitle extends StatelessWidget {
+  final String title;
+
+  const SectionTitle({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+}
+
 class MovieList extends StatelessWidget {
   final List<Map<String, String>> movies;
 
@@ -186,7 +209,7 @@ class MovieList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 180,
+      height: 170,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: movies.length,
@@ -194,24 +217,26 @@ class MovieList extends StatelessWidget {
           final movie = movies[index];
           return Padding(
             padding: const EdgeInsets.only(right: 12.0),
-            child: Column(
-              children: [
-                CachedNetworkImage(
-                  imageUrl: movie['image']!,
-                  placeholder: (context, url) => const CircularProgressIndicator(),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                  fit: BoxFit.cover,
-                  width: 120,
-                  height: 150,
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  movie['title']!,
-                  style: const TextStyle(fontSize: 14, color: Colors.white),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
+            child: ClipRect(
+              child: Column(
+                children: [
+                  CachedNetworkImage(
+                    imageUrl: movie['image']!,
+                    placeholder: (context, url) => const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    fit: BoxFit.cover,
+                    width: 120,
+                    height: 140,
+                  ),
+                  const SizedBox(height: 5),
+                  Text(
+                    movie['title']!,
+                    style: const TextStyle(fontSize: 12, color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
             ),
           );
         },
@@ -251,27 +276,6 @@ class MovieGrid extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class SectionTitle extends StatelessWidget {
-  final String title;
-
-  const SectionTitle({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
-      child: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-      ),
     );
   }
 }
