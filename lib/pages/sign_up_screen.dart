@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -11,22 +12,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
-  List<Map<String, String>> users = [
-    {'email': 'user@example.com', 'password': '123456'},
-  ];
-
-  void signUp() {
+  Future<void> signUp() async {
     String name = nameController.text.trim();
     String email = emailController.text.trim();
     String password = passwordController.text;
     String confirmPassword = confirmPasswordController.text;
 
-    final existingUser = users.firstWhere(
-      (user) => user['email'] == email,
-      orElse: () => {},
-    );
+    final prefs = await SharedPreferences.getInstance();
+    final existingEmail = prefs.getString('email');
 
-    if (existingUser.isNotEmpty) {
+    if (existingEmail != null && existingEmail == email) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Email sudah terdaftar')),
       );
@@ -40,13 +35,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-    users.add({'email': email, 'password': password});
+    // Simpan data ke SharedPreferences
+    await prefs.setString('name', name);
+    await prefs.setString('email', email);
+    await prefs.setString('password', password);
 
-    // Navigating to the profile page and passing the name
+    // Navigasi ke halaman profile setelah registrasi
     Navigator.pushReplacementNamed(
       context,
-      '/profile',  // Route to profile page
-      arguments: name, // Pass name to the profile page
+      '/profile',
     );
   }
 
@@ -54,32 +51,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-          splashColor: Colors.grey[700],
-          hoverColor: Colors.grey[800],
-          borderRadius: BorderRadius.circular(40),
-          onTap: () {
-            Navigator.pop(context);  // Go back to previous screen
-          },
-          child: Icon(
-            Icons.arrow_back,
-            color: Colors.white,
-          ),
+        backgroundColor: Colors.black,  // Set header ke hitam
+        title: Text(
+          'Sign Up',
+          style: TextStyle(color: Colors.white),  // Warna teks putih
         ),
-        title: Text('Sign Up'),
-        backgroundColor: Colors.black,
-        titleTextStyle: TextStyle(
-          color: Colors.white,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context);
+          },
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Form Fields for Registration
             TextField(
               controller: nameController,
               decoration: InputDecoration(
@@ -115,15 +102,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             SizedBox(height: 16),
-
-            // Sign Up Button
             ElevatedButton(
               onPressed: signUp,
               child: Text('Sign Up'),
             ),
             SizedBox(height: 5),
-
-            // Navigation to login page
             TextButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/login');

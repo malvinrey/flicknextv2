@@ -1,156 +1,134 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color(0xFF1C1C1E), // Latar belakang gelap
-      appBar: AppBar(
-        backgroundColor: Color(0xFF1C1C1E), // Sama dengan latar belakang
-        elevation: 0, // Hilangkan bayangan
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context); // Navigasi kembali
-          },
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.settings, color: Colors.white),
-            onPressed: () {
-              // Tambahkan fungsi pengaturan
-            },
+    return FutureBuilder(
+      future: _getUserData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final userData = snapshot.data as Map<String, String>;
+
+        return Scaffold(
+          backgroundColor: Color(0xFF1C1C1E),  // Latar belakang gelap
+          appBar: AppBar(
+            backgroundColor: Colors.black,  // Set header ke hitam
+            elevation: 0,  // Hilangkan bayangan pada header
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context);  // Navigasi kembali
+              },
+            ),
           ),
-          IconButton(
-            icon: Icon(Icons.share, color: Colors.white),
-            onPressed: () {
-              // Tambahkan fungsi share
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Bagian atas: Foto profil, nama, dan tombol edit
-            Center(
-              child: Column(
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.grey[700],
-                    child: Icon(Icons.person, size: 40, color: Colors.white),
-                  ),
-                  SizedBox(height: 12),
-                  Text(
-                    'fajhriramadhan',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Joined Dec 2024',
-                    style: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 14,
-                    ),
-                  ),
-                  SizedBox(height: 12),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 214, 139, 27), // Warna latar belakang tombol
-                      foregroundColor: Colors.black, // Warna teks tombol
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20), // Bentuk tombol
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Bagian atas: Foto profil, nama, dan tombol edit
+                Center(
+                  child: Column(
+                    children: [
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.grey[700],
+                        child: Icon(Icons.person, size: 40, color: Colors.white),
                       ),
-                    ),
-                    onPressed: () {
-                      // Tambahkan fungsi edit profil
-                    },
-                    child: Text('Edit profile'),
+                      SizedBox(height: 12),
+                      Text(
+                        userData['name']!,  // Menampilkan nama yang didapat dari SharedPreferences
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        'Joined Dec 2024',
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 14,
+                        ),
+                      ),
+                      SizedBox(height: 12),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color.fromARGB(255, 214, 139, 27), // Warna latar belakang tombol
+                          foregroundColor: Colors.black, // Warna teks tombol
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20), // Bentuk tombol
+                          ),
+                        ),
+                        onPressed: () {
+                          // Tambahkan fungsi edit profil
+                        },
+                        child: Text('Edit profile'),
+                      ),
+                    ],
                   ),
+                ),
 
-                ],
-              ),
-            ),
+                SizedBox(height: 20),
 
-            SizedBox(height: 20),
-
-            // Statistik Profil (Ratings, Watchlist, Lists, More)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _buildStatCard('Ratings', '0'),
-                  _buildStatCard('Watchlist', '0'),
-                  _buildStatCard('Favorites', '0'),
-                  _buildStatCard('More', '0'),
-                ],
-              ),
-            ),
-
-            SizedBox(height: 20),
-
-            // Informasi Pesan
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16),
-              padding: EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Color(0xFF292B2F),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome to your new profile',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                // Statistik Profil (Favorites, Lists, Other, etc.)
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildStatCard('Favorites', '0'),
+                      _buildStatCard('Lists', '0'),
+                      _buildStatCard('Other', '0'),
+                    ],
                   ),
-                  SizedBox(height: 8),
-                  Text(
-                    'We’re still working on updating some profile features. To see badges, ratings breakdowns, and polls, please go to the previous version of your profile.',
-                    style: TextStyle(
-                      color: Colors.grey[400],
-                      fontSize: 14,
-                    ),
+                ),
+
+                SizedBox(height: 20),
+
+                // Informasi Pesan
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Color(0xFF292B2F),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ],
-              ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Welcome to your new profile',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'We’re still working on updating some profile features. Some statistics and previous features will be available soon.',
+                        style: TextStyle(
+                          color: Colors.grey[400],
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-
-            SizedBox(height: 20),
-
-            // Bagian Ratings
-            _buildSectionHeader('Ratings'),
-            _buildEmptySection(
-              title: 'No ratings yet',
-              buttonText: 'Browse popular movies',
-              onPressed: () {
-                // Tambahkan fungsi untuk browse film
-              },
-            ),
-
-            // Bagian Watchlist
-            _buildSectionHeader('Watchlist'),
-            _buildEmptySection(
-              title: 'No Watchlist yet',
-              buttonText: 'Create a Watchlist',
-              onPressed: () {
-                // Tambahkan fungsi untuk membuat watchlist
-              },
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
@@ -177,64 +155,17 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildSectionHeader(String title) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(width: 8),
-          Icon(Icons.arrow_forward_ios, color: Colors.grey[400], size: 14),
-        ],
-      ),
-    );
-  }
+  // Fungsi untuk mengambil data pengguna dari SharedPreferences
+  Future<Map<String, String>> _getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    String name = prefs.getString('name') ?? 'Unknown';
+    String email = prefs.getString('email') ?? 'Unknown';
+    String password = prefs.getString('password') ?? 'Unknown';
 
-  Widget _buildEmptySection({
-    required String title,
-    required String buttonText,
-    required VoidCallback onPressed,
-  }) {
-    return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Color(0xFF292B2F),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            title,
-            style: TextStyle(
-              color: Colors.grey[400],
-              fontSize: 16,
-            ),
-          ),
-          SizedBox(height: 12),
-          OutlinedButton(
-            onPressed: onPressed,
-            style: OutlinedButton.styleFrom(
-              side: BorderSide(color: const Color.fromARGB(255, 214, 139, 27)),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-            child: Text(
-              buttonText,
-              style: TextStyle(color: const Color.fromARGB(255, 214, 139, 27)),
-            ),
-          ),
-        ],
-      ),
-    );
+    return {
+      'name': name,
+      'email': email,
+      'password': password,
+    };
   }
 }
