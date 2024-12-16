@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
       'rating': 'PG-13',
       'duration': '120 min',
       'imdbRating': '7.5',
-      'votes': '2500',
+      'votes': '250',
     },
     {
       "title": "Interstellar",
