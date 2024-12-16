@@ -1,92 +1,77 @@
-// ignore_for_file: use_super_parameters  
+import 'package:flutter/material.dart';
 
-import 'package:flutter/material.dart';  
+class Header extends StatelessWidget {
+  final VoidCallback? onMenuTap;
 
-class Header extends StatelessWidget implements PreferredSizeWidget {  
-  final Function() onMenuTap;  // Callback to handle sidebar menu toggle  
+  const Header({super.key, this.onMenuTap});
 
-  const Header({  
-    Key? key,  
-    required this.onMenuTap,  // Receive the callback function  
-  }) : super(key: key);  
-
-  @override  
-  Size get preferredSize => const Size.fromHeight(60);  // Fixed height for header  
-
-  @override  
-  Widget build(BuildContext context) {  
-    return AppBar(  
-      backgroundColor: Colors.black,  
-      titleSpacing: 0,  
-      elevation: 0,  
-      title: Padding(  
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),  
-        child: Row(  
-          children: [  
-            // Menu Icon to toggle sidebar  
-            GestureDetector(  
-              onTap: onMenuTap,  // Trigger the callback to toggle sidebar  
-              child: const Icon(Icons.menu, color: Colors.white),  
-            ),  
-            const SizedBox(width: 16),  
-
-            // Logo  
-            ClipRRect(  
-              borderRadius: BorderRadius.circular(8),  
-              child: Container(  
-                padding: const EdgeInsets.all(4.0),  
-                child: Image.asset(  
-                  'assets/images/logo.png',  // Logo image  
-                  height: 40,  
-                  width: 40,  
-                  fit: BoxFit.contain,  
-                ),  
-              ),  
-            ),  
-            const SizedBox(width: 16),  
-
-            // Search Field  
-            Expanded(  
-              child: Container(  
-                height: 40,  
-                decoration: BoxDecoration(  
-                  color: Colors.white,  
-                  borderRadius: BorderRadius.circular(8),  
-                ),  
-                child: TextField(  
-                  decoration: InputDecoration(  
-                    hintText: "Enter movie...",  
-                    border: InputBorder.none,  
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),  
-                    hintStyle: const TextStyle(fontSize: 14),  
-                  ),  
-                  onSubmitted: (text) {  
-                    // Handle search action here  
-                  },  
-                ),  
-              ),  
-            ),  
-            const SizedBox(width: 16),  
-
-            // Login Section  
-            GestureDetector(  
-              onTap: () {  
-                Navigator.pushNamed(context, '/login');  
-              },  
-              child: const Row(  
-                children: [  
-                  Text(  
-                    "Login",  
-                    style: TextStyle(color: Colors.white, fontSize: 14),  
-                  ),  
-                  SizedBox(width: 8),  
-                  Icon(Icons.notifications, color: Colors.yellow, size: 24),  
-                ],  
-              ),  
-            ),  
-          ],  
-        ),  
-      ),  
-    );  
-  }  
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      color: Colors.black,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Logo
+          const Text(
+            "FlickNext",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
+          ),
+          // Search bar
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+              height: 35,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const TextField(
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(left: 12, bottom: 10),
+                  hintText: "Enter movies...",
+                  border: InputBorder.none,
+                ),
+              ),
+            ),
+          ),
+          // Login, Register, and Notification
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/register');
+                },
+                child: const Text(
+                  "Register",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+              const SizedBox(width: 16),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/login');
+                },
+                child: const Text(
+                  "Login",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+              const SizedBox(width: 16),
+              const Icon(
+                Icons.notifications,
+                color: Colors.yellow,
+                size: 24,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
 }

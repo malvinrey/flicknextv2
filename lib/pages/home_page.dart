@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:sidebarx/sidebarx.dart';
+import 'package:easy_sidemenu/easy_sidemenu.dart';
 import '../widgets/footer_main.dart'; // Footer widget
 import '../widgets/header_main.dart'; // Header widget
 
@@ -14,22 +14,25 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   late VideoPlayerController _controller;
-  int _selectedIndex = 0; // Track the selected sidebar index
-  late SidebarXController _sidebarController; // Controller for SidebarX
-  bool _isCollapsed = false; // Manages the collapse/expand state of the sidebar
+  final PageController _pageController = PageController();
+  final SideMenuController _sideMenuController = SideMenuController();
+  bool _isCollapsed = false; // Track sidebar collapsed state
 
   final List<Map<String, String>> continueWatchingMovies = [
-    {
-      "title": "Avatar",
-      "image": "https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg"
-    },
+    {"title": "Avatar", "image": "https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg"},
+    {"title": "The Lion King", "image": "https://image.tmdb.org/t/p/w500/2bXbqYdUdNVa8VIWXVfclP2ICtT.jpg"},
+    {"title": "Titanic", "image": "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg"},
+    {"title": "Interstellar", "image": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"},
+    {"title": "The Dark Knight", "image": "https://image.tmdb.org/t/p/w500/1hRoyzDtpgMU7Dz4JF22RANzQO7.jpg"},
   ];
 
   final List<Map<String, String>> latestMovies = [
-    {
-      "title": "Black Panther",
-      "image": "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg"
-    },
+    {"title": "Black Panther", "image": "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg"},
+    {"title": "The Avengers", "image": "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg"},
+    {"title": "Thor: Ragnarok", "image": "https://image.tmdb.org/t/p/w500/rzRwTcFvttcN1ZpX2xv4j3tSdJu.jpg"},
+    {"title": "Iron Man", "image": "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg"},
+    {"title": "Doctor Strange", "image": "https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg"},
+    {"title": "Joker", "image": "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg"},
   ];
 
   @override
@@ -42,23 +45,17 @@ class HomePageState extends State<HomePage> {
         debugPrint("Error loading video: $error");
       });
 
-    _sidebarController = SidebarXController(selectedIndex: _selectedIndex);
+    _sideMenuController.addListener((index) {
+      _pageController.jumpToPage(index);
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _sideMenuController.dispose();
+    _pageController.dispose();
     super.dispose();
-  }
-
-  void _togglePlayPause() {
-    setState(() {
-      if (_controller.value.isPlaying) {
-        _controller.pause();
-      } else {
-        _controller.play();
-      }
-    });
   }
 
   void _toggleSidebar() {
@@ -73,56 +70,60 @@ class HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       body: Row(
         children: [
-          SidebarX(
-            controller: _sidebarController,
-            theme: SidebarXTheme(
-              width: _isCollapsed ? 60 : 200,
-              decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.8),
-              ),
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 20,
-              ),
-              textStyle: const TextStyle(color: Colors.white),
+          SideMenu(
+            controller: _sideMenuController,
+            style: SideMenuStyle(
+              backgroundColor: Colors.grey[900],
+              itemBorderRadius: BorderRadius.circular(8),
+              displayMode: _isCollapsed ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+              selectedColor: Colors.white,
+              unselectedTitleTextStyle: const TextStyle(color: Colors.white70),
+              selectedTitleTextStyle: const TextStyle(color: Colors.white),
+              selectedIconColor: Colors.yellow,
+              unselectedIconColor: Colors.white70,
             ),
-            items: _items,
+            items: [
+              SideMenuItem(
+                title: 'Home',
+                icon: const Icon(Icons.home, color: Colors.yellow),
+                onTap: (index, _) {
+                  _sideMenuController.changePage(index);
+                },
+              ),
+              SideMenuItem(
+                title: 'Settings',
+                icon: const Icon(Icons.settings, color: Colors.yellow),
+                onTap: (index, _) {
+                  _sideMenuController.changePage(index);
+                },
+              ),
+              SideMenuItem(
+                title: 'Cart',
+                icon: const Icon(Icons.shopping_cart, color: Colors.yellow),
+                onTap: (index, _) {
+                  _sideMenuController.changePage(index);
+                },
+              ),
+              SideMenuItem(
+                title: _isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar',
+                icon: Icon(
+                  _isCollapsed ? Icons.arrow_forward_ios : Icons.arrow_back_ios,
+                  color: Colors.yellow,
+                ),
+                onTap: (index, _) {
+                  _toggleSidebar();
+                },
+              ),
+            ],
           ),
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Header(onMenuTap: _toggleSidebar),
-                  Container(
-                    height: 300,
-                    color: Colors.black,
-                    child: Stack(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: 16 / 9,
-                          child: VideoPlayer(_controller),
-                        ),
-                        Center(
-                          child: IconButton(
-                            icon: Icon(
-                              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: Colors.white,
-                              size: 60,
-                            ),
-                            onPressed: _togglePlayPause,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SectionTitle(title: "Continue Watching"),
-                  MovieList(movies: continueWatchingMovies),
-                  const SectionTitle(title: "Latest Movies"),
-                  MovieGrid(movies: latestMovies),
-                  Footer(),
-                ],
-              ),
+            child: PageView(
+              controller: _pageController,
+              children: [
+                _homePageContent(),
+                const Center(child: Text('Settings Page', style: TextStyle(color: Colors.white))),
+                const Center(child: Text('Cart Page', style: TextStyle(color: Colors.white))),
+              ],
             ),
           ),
         ],
@@ -130,36 +131,50 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  List<SidebarXItem> get _items {
-    return [
-      SidebarXItem(
-        icon: Icons.home_rounded,
-        label: 'Home',
-        onTap: () {
-          setState(() {
-            _selectedIndex = 0;
-          });
-        },
+  Widget _homePageContent() {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Header(),
+          Container(
+            height: 300,
+            color: Colors.black,
+            child: Stack(
+              children: [
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: VideoPlayer(_controller),
+                ),
+                Center(
+                  child: IconButton(
+                    icon: Icon(
+                      _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white,
+                      size: 60,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        if (_controller.value.isPlaying) {
+                          _controller.pause();
+                        } else {
+                          _controller.play();
+                        }
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SectionTitle(title: "Continue Watching"),
+          MovieList(movies: continueWatchingMovies),
+          const SectionTitle(title: "Latest Movies"),
+          MovieGrid(movies: latestMovies),
+          Footer(),
+        ],
       ),
-      SidebarXItem(
-        icon: Icons.settings_rounded,
-        label: 'Settings',
-        onTap: () {
-          setState(() {
-            _selectedIndex = 1;
-          });
-        },
-      ),
-      SidebarXItem(
-        icon: Icons.shopping_cart,
-        label: 'Cart',
-        onTap: () {
-          setState(() {
-            _selectedIndex = 2;
-          });
-        },
-      ),
-    ];
+    );
   }
 }
 
