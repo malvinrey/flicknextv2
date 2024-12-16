@@ -54,6 +54,24 @@ class _LoginPageState extends State<LoginPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Menambahkan Logo dan Teks
+            Center(
+              child: Column(
+                children: [
+                  Image.asset('assets/images/logo.png', width: 120), // Logo
+                  SizedBox(height: 20),
+                  Text(
+                    'Flick NEXT',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 40),
             TextField(
               controller: emailController,
               keyboardType: TextInputType.emailAddress,
@@ -74,14 +92,14 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _login,
-              child: Text('Login'),
+              child: Text('Sign In'),
             ),
             SizedBox(height: 10),
             TextButton(
               onPressed: () {
                 Navigator.pushReplacementNamed(context, '/register');
               },
-              child: Text('Don\'t have an account? Sign up'),
+              child: Text('Belum punya akun? Register'),
             ),
           ],
         ),
