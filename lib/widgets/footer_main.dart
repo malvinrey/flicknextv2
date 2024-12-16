@@ -1,19 +1,23 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Footer extends StatelessWidget {
+  const Footer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.black, // Background color for the footer
       child: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 800), // Center content with a maximum width
+          constraints: const BoxConstraints(maxWidth: 800), // Center content with a maximum width
           child: Column(
             mainAxisSize: MainAxisSize.min, // Minimize height to fit content
             children: [
-              SizedBox(height: 10), // Padding above "Follow FlickNext on social"
-              Text(
+              const SizedBox(height: 10), // Padding above "Follow FlickNext on social"
+              const Text(
                 "Follow FlickNext on social",
                 style: TextStyle(
                   color: Colors.white,
@@ -21,7 +25,7 @@ class Footer extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 5), // Spacing between title and icons
+              const SizedBox(height: 5), // Spacing between title and icons
               // Social Media Icons Section
               Wrap(
                 alignment: WrapAlignment.center, // Center-align icons
@@ -35,11 +39,11 @@ class Footer extends StatelessWidget {
                   _buildSocialIcon(FontAwesomeIcons.tiktok),
                 ],
               ),
-              SizedBox(height: 5), // Spacing between icons and links
+              const SizedBox(height: 5), // Spacing between icons and links
 
               // Links Section with Padding
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20), // Horizontal padding for links
+                padding: const EdgeInsets.symmetric(horizontal: 20), // Horizontal padding for links
                 child: Wrap(
                   alignment: WrapAlignment.center, // Center-align links
                   spacing: 20, // Spacing between links
@@ -51,17 +55,17 @@ class Footer extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 8), // Reduced spacing between links and copyright
+              const SizedBox(height: 8), // Reduced spacing between links and copyright
 
               // Copyright Section
-              Text(
+              const Text(
                 "© 2024 FlickNext, Inc.",
                 style: TextStyle(
                   color: Colors.white54,
                   fontSize: 12, // Font size
                 ),
               ),
-              SizedBox(height: 15), // Final bottom padding
+              const SizedBox(height: 15), // Final bottom padding
             ],
           ),
         ),
@@ -76,12 +80,12 @@ class Footer extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           print("Icon tapped"); // Handle icon click
-        },
+        },  
         child: Container(
-          padding: EdgeInsets.all(8), // Padding around each icon
+          padding: const EdgeInsets.all(8), // Padding around each icon
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white.withOpacity(0.1), // Light background for icons
+            color: Colors.white.withAlpha((255 * 0.1).toInt()), // Light background for icons
           ),
           child: Icon(
             icon,
@@ -99,7 +103,7 @@ class Footer extends StatelessWidget {
       cursor: SystemMouseCursors.click,
       child: Text(
         text,
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.white, // White color by default
           decoration: TextDecoration.none, // No underline by default
         ),
