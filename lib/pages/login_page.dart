@@ -34,14 +34,36 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  // Fungsi untuk menangani proses lupa password
+  void _forgotPassword() {
+    // Anda bisa membuka halaman baru untuk reset password atau dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Forgot Password'),
+          content: Text('Please contact support to reset your password.'),
+          actions: [
+            TextButton(
+              child: Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Menutup dialog
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black,  // Set header ke hitam
+        backgroundColor: Colors.black,
         title: Text(
           'Login',
-          style: TextStyle(color: Colors.white),  // Warna teks putih
+          style: TextStyle(color: Colors.white),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -100,6 +122,16 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.pushReplacementNamed(context, '/register');
               },
               child: Text('Belum punya akun? Register'),
+            ),
+            // Opsi Lupa Password
+            TextButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/forgot-password');
+              },
+              child: Text(
+                'Lupa Password?',
+                style: TextStyle(color: Colors.blue),
+              ),
             ),
           ],
         ),
