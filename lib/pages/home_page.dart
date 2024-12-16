@@ -19,20 +19,53 @@ class HomePageState extends State<HomePage> {
   bool _isCollapsed = true; // Track sidebar collapsed state
 
   final List<Map<String, String>> continueWatchingMovies = [
-    {"title": "Avatar", "image": "https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg"},
-    {"title": "The Lion King", "image": "https://image.tmdb.org/t/p/w500/2bXbqYdUdNVa8VIWXVfclP2ICtT.jpg"},
-    {"title": "Titanic", "image": "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg"},
-    {"title": "Interstellar", "image": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"},
-    {"title": "The Dark Knight", "image": "https://image.tmdb.org/t/p/w500/1hRoyzDtpgMU7Dz4JF22RANzQO7.jpg"},
+    {
+      "title": "Avatar",
+      "image": "https://image.tmdb.org/t/p/w500/jRXYjXNq0Cs2TcJjLkki24MLp7u.jpg"
+    },
+    {
+      "title": "The Lion King",
+      "image": "https://image.tmdb.org/t/p/w500/2bXbqYdUdNVa8VIWXVfclP2ICtT.jpg"
+    },
+    {
+      "title": "Titanic",
+      "image": "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg"
+    },
+    {
+      "title": "Interstellar",
+      "image": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg"
+    },
+    {
+      "title": "The Dark Knight",
+      "image": "https://image.tmdb.org/t/p/w500/1hRoyzDtpgMU7Dz4JF22RANzQO7.jpg"
+    },
   ];
 
   final List<Map<String, String>> latestMovies = [
-    {"title": "Black Panther", "image": "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg"},
-    {"title": "The Avengers", "image": "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg"},
-    {"title": "Thor: Ragnarok", "image": "https://image.tmdb.org/t/p/w500/rzRwTcFvttcN1ZpX2xv4j3tSdJu.jpg"},
-    {"title": "Iron Man", "image": "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg"},
-    {"title": "Doctor Strange", "image": "https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg"},
-    {"title": "Joker", "image": "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg"},
+    {
+      "title": "Black Panther",
+      "image": "https://image.tmdb.org/t/p/w500/uxzzxijgPIY7slzFvMotPv8wjKA.jpg"
+    },
+    {
+      "title": "The Avengers",
+      "image": "https://image.tmdb.org/t/p/w500/RYMX2wcKCBAr24UyPD7xwmjaTn.jpg"
+    },
+    {
+      "title": "Thor: Ragnarok",
+      "image": "https://image.tmdb.org/t/p/w500/rzRwTcFvttcN1ZpX2xv4j3tSdJu.jpg"
+    },
+    {
+      "title": "Iron Man",
+      "image": "https://image.tmdb.org/t/p/w500/78lPtwv72eTNqFW9COBYI0dWDJa.jpg"
+    },
+    {
+      "title": "Doctor Strange",
+      "image": "https://image.tmdb.org/t/p/w500/uGBVj3bEbCoZbDjjl9wTxcygko1.jpg"
+    },
+    {
+      "title": "Joker",
+      "image": "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg"
+    },
   ];
 
   @override
@@ -76,8 +109,10 @@ class HomePageState extends State<HomePage> {
               backgroundColor: Colors.grey[900],
               itemBorderRadius: BorderRadius.circular(8),
               compactSideMenuWidth: 65, // Lebar sidebar ketika collapse
-              openSideMenuWidth: 150,   // Lebar sidebar ketika expand
-              displayMode: _isCollapsed ? SideMenuDisplayMode.compact : SideMenuDisplayMode.open,
+              openSideMenuWidth: 150, // Lebar sidebar ketika expand
+              displayMode: _isCollapsed
+                  ? SideMenuDisplayMode.compact
+                  : SideMenuDisplayMode.open,
               selectedColor: Colors.white,
               unselectedTitleTextStyle: const TextStyle(color: Colors.white70),
               selectedTitleTextStyle: const TextStyle(color: Colors.white),
@@ -114,14 +149,20 @@ class HomePageState extends State<HomePage> {
           Expanded(
             child: Column(
               children: [
-                Header(isSidebarExpanded: !_isCollapsed), // Header menerima status sidebar
+                Header(
+                    isSidebarExpanded:
+                        !_isCollapsed), // Header menerima status sidebar
                 Expanded(
                   child: PageView(
                     controller: _pageController,
                     children: [
                       _homePageContent(),
-                      const Center(child: Text('Settings Page', style: TextStyle(color: Colors.white))),
-                      const Center(child: Text('Cart Page', style: TextStyle(color: Colors.white))),
+                      const Center(
+                          child: Text('Settings Page',
+                              style: TextStyle(color: Colors.white))),
+                      const Center(
+                          child: Text('Cart Page',
+                              style: TextStyle(color: Colors.white))),
                     ],
                   ),
                 ),
@@ -149,7 +190,9 @@ class HomePageState extends State<HomePage> {
                         Center(
                           child: IconButton(
                             icon: Icon(
-                              _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+                              _controller.value.isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
                               color: Colors.white,
                               size: 60,
                             ),
@@ -222,8 +265,10 @@ class MovieList extends StatelessWidget {
                 children: [
                   CachedNetworkImage(
                     imageUrl: movie['image']!,
-                    placeholder: (context, url) => const CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => const Icon(Icons.error),
+                    placeholder: (context, url) =>
+                        const CircularProgressIndicator(),
+                    errorWidget: (context, url, error) =>
+                        const Icon(Icons.error),
                     fit: BoxFit.cover,
                     width: 120,
                     height: 140,
