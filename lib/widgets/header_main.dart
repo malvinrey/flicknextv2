@@ -1,50 +1,107 @@
 import 'package:flutter/material.dart';
-import 'sidebar.dart';
 
-class Header extends StatefulWidget implements PreferredSizeWidget {
-  final SideBarAnimatedState sideBarAnimatedState;
+class Header extends StatefulWidget {
+  final bool isSidebarExpanded;
 
-  const Header({
-    Key? key,
-    required this.sideBarAnimatedState,
-  }) : super(key: key);
+  const Header({super.key, required this.isSidebarExpanded});
 
   @override
-  Size get preferredSize => const Size.fromHeight(60);
-
-  @override
-  _HeaderState createState() => _HeaderState();
+  State<Header> createState() => _HeaderState();
 }
 
 class _HeaderState extends State<Header> {
+  OverlayEntry? _overlayEntry;
+  final LayerLink _layerLink = LayerLink();
+  final TextEditingController _searchController = TextEditingController();
+
+  // Menampilkan overlay pencarian
+  void _showOverlay() {
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 80,
+        left: 16,
+        child: CompositedTransformFollower(
+          link: _layerLink,
+          showWhenUnlinked: false,
+          child: Material(
+            color: Colors.transparent,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              width: 300,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: _searchController,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Search for movies...',
+                  border: InputBorder.none,
+                  prefixIcon: Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: _removeOverlay,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context)?.insert(_overlayEntry!);
+  }
+
+  // Menghapus overlay
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.black,
-      titleSpacing: 0,
-      elevation: 0,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Row(
+    return Scaffold(
+      backgroundColor: Colors.white,  // Set background to white
+      appBar: AppBar(
+        backgroundColor: Colors.black,  // Set header to black
+        elevation: 0,  // Remove shadow from header
+        leading: InkWell(
+          splashColor: Colors.grey[700],
+          hoverColor: Colors.grey[800],
+          borderRadius: BorderRadius.circular(40),
+          onTap: () {
+            Navigator.pop(context);  // Back navigation
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
+          ),
+        ),
+        title: Text(
+          'Header Title',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            // Menu Icon
-            GestureDetector(
-              onTap: () {
-                setState(() {
-                  widget.sideBarAnimatedState.toggleVisibility();
-                });
-              },
-              child: Icon(Icons.menu, color: Colors.white),
-            ),
-            SizedBox(width: 16),
-
-            // Logonya
+            // Logo
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Container(
                 padding: const EdgeInsets.all(4.0),
                 child: Image.asset(
-                  '../assets/images/logo.png',
+                  'assets/images/logo.png',  // Path to logo
                   height: 40,
                   width: 40,
                   fit: BoxFit.contain,
@@ -53,7 +110,7 @@ class _HeaderState extends State<Header> {
             ),
             SizedBox(width: 16),
 
-            // Search Field (Selalu Tampil)
+            // Search Field (Always Visible)
             Expanded(
               child: Container(
                 height: 40,
@@ -62,11 +119,11 @@ class _HeaderState extends State<Header> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: TextField(
+                  controller: _searchController,
                   decoration: InputDecoration(
                     hintText: "Enter movie...",
                     border: InputBorder.none,
-                    contentPadding:
-                    EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     hintStyle: TextStyle(fontSize: 14),
                   ),
                 ),
@@ -74,20 +131,19 @@ class _HeaderState extends State<Header> {
             ),
             SizedBox(width: 16),
 
-            // Profile Icon (Menggunakan Icon)
+            // Profile Icon (Using Icon)
             GestureDetector(
               onTap: () {
-                // Navigasi ke halaman profil
-                Navigator.pushNamed(context, '/profile'); // Rute ke halaman profile
+                Navigator.pushNamed(context, '/profile');  // Navigate to profile page
               },
               child: Container(
                 padding: EdgeInsets.all(6),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.black, // Background ikon profil
+                  color: Colors.black,  // Profile icon background color
                 ),
                 child: Icon(
-                  Icons.person, // Ikon profil
+                  Icons.person,  // Profile icon
                   color: Colors.white,
                   size: 28,
                 ),
@@ -95,25 +151,24 @@ class _HeaderState extends State<Header> {
             ),
             SizedBox(width: 16),
 
+            // Search Icon
             GestureDetector(
-              onTap: () {
-                // Navigate to LoginPage using named route
-                Navigator.pushNamed(context, '/login');
-              },
-              child: Row(
-                children: [
-                  Text(
-                    "Login",
-                    style: TextStyle(color: Colors.white, fontSize: 14),
-                  ),
-                  SizedBox(width: 8),
-                  Icon(Icons.notifications, color: Colors.yellow, size: 24),
-                ],
+              onTap: _showOverlay,
+              child: Icon(
+                Icons.search,
+                color: Colors.black,
+                size: 28,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _removeOverlay();  // Remove the overlay when the widget is disposed
+    super.dispose();
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/footer_main.dart';
 
-
 class DetailFilm extends StatefulWidget {
   final String title;
   final String imageUrl;
@@ -42,6 +41,12 @@ class _DetailFilmState extends State<DetailFilm> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.pop(context); // Kembali ke halaman sebelumnya
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -189,7 +194,6 @@ class _DetailFilmState extends State<DetailFilm> {
       ),
       backgroundColor: Colors.black,
     );
-    
   }
 
   // Helper Method for Detail Rows
@@ -210,10 +214,7 @@ class _DetailFilmState extends State<DetailFilm> {
           details.replaceAll('•', ' · '),
           style: TextStyle(fontSize: 14, color: Colors.blueAccent),
         ),
-
-        
       ],
     );
   }
-  
 }

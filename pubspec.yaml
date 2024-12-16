@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  easy_sidemenu : ^0.6.0  # Removed collapsible_sidebar package
   font_awesome_flutter: ^10.5.0
   video_player: ^2.4.5
   youtube_player_flutter: ^9.1.1
@@ -27,6 +28,9 @@ dev_dependencies:
     sdk: flutter
   shared_preferences: ^2.0.16
 
+
+  # Include flutter_lints as a dev dependency
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
