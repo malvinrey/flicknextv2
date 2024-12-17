@@ -8,10 +8,12 @@ import 'url_strategy_stub.dart' if (dart.library.html) 'url_strategy_web.dart';
 
 import 'pages/login_page.dart';
 import 'pages/home_page.dart';
-import 'pages/sign_in_screen.dart';
+import 'pages/sign_up_screen.dart';
 import 'pages/reset_password.dart';
 import 'pages/lupa_password.dart';
 import 'pages/watchlist_page.dart';
+import 'pages/profile_page.dart';  // Tambahkan import untuk ProfilePage
+
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,11 +38,13 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const HomePage(),
-        '/login': (context) => const LoginPage(),
+        '/login': (context) => LoginPage(),
         '/register': (context) => SignUpScreen(),
         '/reset-password': (context) => ResetPasswordPage(),
         '/forgot-password': (context) => LupaPasswordPage(),
-        '/watchlist': (context) => WatchlistPage(),
+        '/watchlist': (context) => WatchlistPage(), // Rute untuk WatchlistPage
+        '/profile': (context) => ProfilePage(), // Rute untuk halaman profil
+
       },
     );
   }

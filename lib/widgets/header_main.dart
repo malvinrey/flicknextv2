@@ -125,6 +125,19 @@ class _HeaderState extends State<Header> {
                           style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ),
+                      
+                      const SizedBox(width: 16), // Spasi antar ikon
+                      GestureDetector(
+                        onTap: () {
+                          // Aksi saat ikon profil ditekan
+                          Navigator.pushNamed(context, '/profile');
+                        },
+                        child: const Icon(
+                          Icons.account_circle,
+                          color: Colors.white,
+                          size: 28,
+                        ),
+                      ),
                       const SizedBox(width: 16),
                       const Icon(
                         Icons.notifications,
