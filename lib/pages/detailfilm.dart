@@ -54,6 +54,7 @@ class _DetailFilmState extends State<DetailFilm> {
     }
   }
 
+  // Menambahkan atau menghapus film dari watchlist
   Future<void> _toggleFavorite() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? favoriteMovies = prefs.getStringList('watchlist') ?? [];
@@ -65,17 +66,8 @@ class _DetailFilmState extends State<DetailFilm> {
       );
     } else {
       // Menambahkan data film lengkap ke SharedPreferences
-      prefs.setString('${widget.title}_imageUrl', widget.imageUrl);
-      prefs.setString('${widget.title}_description', widget.description);
-      prefs.setString('${widget.title}_genre', widget.genre);
-      prefs.setString('${widget.title}_writer', widget.writer);
-      prefs.setString('${widget.title}_actors', widget.actors);
+      prefs.setString(widget.title, widget.imageUrl);
       prefs.setString('${widget.title}_year', widget.year);
-      prefs.setString('${widget.title}_rating', widget.rating);
-      prefs.setString('${widget.title}_duration', widget.duration);
-      prefs.setDouble('${widget.title}_imdbRating', widget.imdbRating);
-      prefs.setInt('${widget.title}_votes', widget.votes);
-
       favoriteMovies.add(widget.title);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("${widget.title} added to favorites!")),
