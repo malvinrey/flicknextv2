@@ -249,13 +249,13 @@ class HomePageState extends State<HomePage> {
                   _sideMenuController.changePage(index);
                 },
               ),
-              SideMenuItem(
-                title: 'Settings',
-                icon: const Icon(Icons.settings, color: Colors.yellow),
-                onTap: (index, _) {
-                  _sideMenuController.changePage(index);
-                },
-              ),
+              // SideMenuItem(
+              //   title: 'Settings',
+              //   icon: const Icon(Icons.settings, color: Colors.yellow),
+              //   onTap: (index, _) {
+              //     _sideMenuController.changePage(index);
+              //   },
+              // ),
               SideMenuItem(
                 title: 'Watchlist',
                 icon: const Icon(Icons.favorite,

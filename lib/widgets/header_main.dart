@@ -138,12 +138,6 @@ class _HeaderState extends State<Header> {
                           size: 28,
                         ),
                       ),
-                      const SizedBox(width: 16),
-                      // const Icon(
-                      //   Icons.notifications,
-                      //   color: Colors.yellow,
-                      //   size: 24,
-                      // ),
                     ],
                   ),
                 ],
