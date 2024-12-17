@@ -27,7 +27,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   // Save the updated name to SharedPreferences
   Future<void> _saveName() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.setString('name', _nameController.text);
+    prefs.setString('name', _nameController.text); // Save the name entered
   }
 
   @override
@@ -39,7 +39,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           hoverColor: Colors.grey[800],
           borderRadius: BorderRadius.circular(40),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pop(context);  // Go back
           },
           child: Icon(
             Icons.arrow_back,
@@ -90,7 +90,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 onPressed: () async {
                   // Save the name and return to profile page
                   await _saveName();
-                  Navigator.pushReplacementNamed(context, '/profile');
+                  Navigator.pushReplacementNamed(context, '/profile'); // Ensures ProfilePage is rebuilt
                 },
                 child: const Text('Save Changes'),
                 style: ElevatedButton.styleFrom(
