@@ -74,81 +74,85 @@ class _WatchlistPageState extends State<WatchlistPage> {
         toolbarHeight: 80, // Menambahkan jarak vertikal pada app bar
       ),
       backgroundColor: Colors.black, // Background of the whole page
-      body: ListView.builder(
-        itemCount: movies.length,
-        itemBuilder: (context, index) {
-          final movie = movies[index];
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            elevation: 4,
-            color:
-                Color(0xFF161616), // Set the card background color to #161616
-            shape: RoundedRectangleBorder(
-              borderRadius:
-                  BorderRadius.circular(16.0), // Rounded corners for the card
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                  16.0), // Apply the same borderRadius to the content inside the card
-              child: Stack(
-                children: [
-                  Row(
-                    children: [
-                      Image.network(
-                        movie.imageUrl,
-                        width: 100,
-                        height: 150,
-                        fit: BoxFit.cover, // Ensures the image fits properly
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment
-                              .start, // Ensures the content starts from the top
-                          crossAxisAlignment: CrossAxisAlignment.start,
+      body: movies.isEmpty
+          ? Center(
+              child: Text(
+                "Watchlist anda masih kosong",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            )
+          : ListView.builder(
+              itemCount: movies.length,
+              itemBuilder: (context, index) {
+                final movie = movies[index];
+                return Card(
+                  margin: const EdgeInsets.all(8.0),
+                  elevation: 4,
+                  color: Color(
+                      0xFF161616), // Set the card background color to #161616
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
+                    child: Stack(
+                      children: [
+                        Row(
                           children: [
-                            Text(
-                              movie.title,
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors
-                                    .white, // Set text color to white for visibility
+                            Image.network(
+                              movie.imageUrl,
+                              width: 100,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    movie.title,
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    movie.releaseYear,
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 14,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                ],
                               ),
                             ),
-                            const SizedBox(height: 8),
-                            // Menampilkan tahun rilis film
-                            Text(
-                              movie.releaseYear, // Menampilkan tahun
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 16),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                  // Icon trashcan di pojok kanan bawah menggunakan Positioned
-                  Positioned(
-                    bottom: 8,
-                    right: 8,
-                    child: IconButton(
-                      onPressed: () {
-                        // Hapus film dari watchlist ketika ikon tempat sampah diklik
-                        _removeMovieFromWatchlist(movie.title);
-                      },
-                      icon: Icon(Icons.delete, color: Colors.red),
+                        Positioned(
+                          bottom: 8,
+                          right: 8,
+                          child: IconButton(
+                            onPressed: () {
+                              _removeMovieFromWatchlist(movie.title);
+                            },
+                            icon: Icon(Icons.delete, color: Colors.red),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 }
