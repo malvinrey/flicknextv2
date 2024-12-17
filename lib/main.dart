@@ -12,8 +12,7 @@ import 'pages/sign_up_screen.dart';
 import 'pages/reset_password.dart';
 import 'pages/lupa_password.dart';
 import 'pages/watchlist_page.dart';
-import 'pages/profile_page.dart';  // Tambahkan import untuk ProfilePage
-
+import 'pages/profile_page.dart'; // Tambahkan import untuk ProfilePage
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +43,6 @@ class MyApp extends StatelessWidget {
         '/forgot-password': (context) => LupaPasswordPage(),
         '/watchlist': (context) => WatchlistPage(), // Rute untuk WatchlistPage
         '/profile': (context) => ProfilePage(), // Rute untuk halaman profil
-
       },
     );
   }
