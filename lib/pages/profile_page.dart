@@ -18,14 +18,14 @@ class ProfilePage extends StatelessWidget {
         final userData = snapshot.data as Map<String, String>;
 
         return Scaffold(
-          backgroundColor: Color(0xFF1C1C1E),  // Latar belakang gelap
+          backgroundColor: Color(0xFF1C1C1E),  // Dark background
           appBar: AppBar(
-            backgroundColor: Colors.black,  // Set header ke hitam
-            elevation: 0,  // Hilangkan bayangan pada header
+            backgroundColor: Colors.black,  // Header is black
+            elevation: 0,  // Remove shadow from header
             leading: IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                Navigator.pop(context);  // Navigasi kembali
+                Navigator.pop(context);  // Go back
               },
             ),
           ),
@@ -33,7 +33,7 @@ class ProfilePage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Bagian atas: Foto profil, nama, dan tombol edit
+                // Top section: Profile photo, name, and edit button
                 Center(
                   child: Column(
                     children: [
@@ -44,7 +44,7 @@ class ProfilePage extends StatelessWidget {
                       ),
                       SizedBox(height: 12),
                       Text(
-                        userData['name']!,  // Menampilkan nama yang didapat dari SharedPreferences
+                        userData['name']!,  // Display name from SharedPreferences
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 20,
@@ -62,14 +62,14 @@ class ProfilePage extends StatelessWidget {
                       SizedBox(height: 12),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 214, 139, 27), // Warna latar belakang tombol
-                          foregroundColor: Colors.black, // Warna teks tombol
+                          backgroundColor: const Color.fromARGB(255, 214, 139, 27), // Button background color
+                          foregroundColor: Colors.black, // Button text color
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20), // Bentuk tombol
+                            borderRadius: BorderRadius.circular(20), // Rounded button shape
                           ),
                         ),
                         onPressed: () {
-                          // Tambahkan fungsi edit profil
+                          Navigator.pushNamed(context, '/edit-profile');  // Navigate to edit profile
                         },
                         child: Text('Edit profile'),
                       ),
@@ -79,7 +79,7 @@ class ProfilePage extends StatelessWidget {
 
                 SizedBox(height: 20),
 
-                // Statistik Profil (Favorites, Lists, Other, etc.)
+                // Statistics section (Favorites, Lists, etc.)
                 Container(
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
@@ -94,7 +94,7 @@ class ProfilePage extends StatelessWidget {
 
                 SizedBox(height: 20),
 
-                // Informasi Pesan
+                // Message Information
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 16),
                   padding: EdgeInsets.all(12),
@@ -155,10 +155,10 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  // Fungsi untuk mengambil data pengguna dari SharedPreferences
+  // Function to get user data from SharedPreferences
   Future<Map<String, String>> _getUserData() async {
     final prefs = await SharedPreferences.getInstance();
-    String name = prefs.getString('name') ?? 'Unknown';
+    String name = prefs.getString('name') ?? 'Unknown';  // Get the saved name
     String email = prefs.getString('email') ?? 'Unknown';
     String password = prefs.getString('password') ?? 'Unknown';
 
