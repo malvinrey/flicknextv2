@@ -12,9 +12,7 @@ import 'pages/sign_up_screen.dart';
 import 'pages/reset_password.dart';
 import 'pages/lupa_password.dart';
 import 'pages/watchlist_page.dart';
-import 'pages/profile_page.dart';  // Tambahkan import untuk ProfilePage
-import 'pages/edit_profile_page.dart'; // Import halaman EditProfilePage
-
+import 'pages/profile_page.dart'; // Tambahkan import untuk ProfilePage
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

@@ -36,19 +36,19 @@ class _HeaderState extends State<Header> {
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
-                      autofocus: true, // Fokus otomatis saat overlay muncul
+                      autofocus: true, 
                       decoration: const InputDecoration(
                         hintText: "Search for movies...",
                         border: InputBorder.none,
                       ),
                       onSubmitted: (value) {
-                        _removeOverlay(); // Tutup overlay setelah submit
+                        _removeOverlay(); 
                       },
                     ),
                   ),
                   IconButton(
                     icon: const Icon(Icons.close, color: Colors.grey),
-                    onPressed: _removeOverlay, // Tutup overlay ketika ditekan
+                    onPressed: _removeOverlay, 
                   ),
                 ],
               ),
@@ -126,7 +126,7 @@ class _HeaderState extends State<Header> {
                         ),
                       ),
                       
-                      const SizedBox(width: 16), // Spasi antar ikon
+                      const SizedBox(width: 16), 
                       GestureDetector(
                         onTap: () {
                           // Aksi saat ikon profil ditekan

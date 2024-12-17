@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 // Dummy data class for movies
 class Movie {
   final String title;
   final String imageUrl;
-  final String releaseYear; // Mengganti watchedStatus menjadi releaseYear
+  final String releaseYear;
 
   Movie({
     required this.title,
@@ -19,33 +20,40 @@ class WatchlistPage extends StatefulWidget {
 }
 
 class _WatchlistPageState extends State<WatchlistPage> {
-  // List of dummy movies with updated data
-  final List<Movie> movies = [
-    Movie(
-      title: "Spider-Man: Homecoming",
-      imageUrl:
-          "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
-      releaseYear: "2017", // Update to year
-    ),
-    Movie(
-      title: "Doctor Strange",
-      imageUrl:
-          "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
-      releaseYear: "2016", // Update to year
-    ),
-    Movie(
-      title: "Captain Marvel",
-      imageUrl:
-          "https://image.tmdb.org/t/p/w500/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg",
-      releaseYear: "2019", // Update to year
-    ),
-  ];
+  List<Movie> movies = [];
 
-  // Method to remove a movie from the list
-  void _deleteMovie(int index) {
-    setState(() {
-      movies.removeAt(index); // Remove movie at the specified index
-    });
+  @override
+  void initState() {
+    super.initState();
+    _loadWatchlist();
+  }
+
+  // Memuat data film dari SharedPreferences
+  Future<void> _loadWatchlist() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? favoriteMovies = prefs.getStringList('watchlist');
+    if (favoriteMovies != null) {
+      setState(() {
+        movies = favoriteMovies.map((title) {
+          String imageUrl = prefs.getString(title) ?? '';
+          String releaseYear = prefs.getString('${title}_year') ?? 'Unknown';
+          return Movie(
+            title: title,
+            imageUrl: imageUrl,
+            releaseYear: releaseYear,
+          );
+        }).toList();
+      });
+    }
+  }
+
+  // Menghapus film dari watchlist
+  Future<void> _removeMovieFromWatchlist(String title) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? favoriteMovies = prefs.getStringList('watchlist');
+    favoriteMovies?.remove(title);
+    await prefs.setStringList('watchlist', favoriteMovies!);
+    _loadWatchlist(); // Refresh list
   }
 
   @override
@@ -129,8 +137,8 @@ class _WatchlistPageState extends State<WatchlistPage> {
                     right: 8,
                     child: IconButton(
                       onPressed: () {
-                        // Delete the movie when the trashcan icon is clicked
-                        _deleteMovie(index);
+                        // Hapus film dari watchlist ketika ikon tempat sampah diklik
+                        _removeMovieFromWatchlist(movie.title);
                       },
                       icon: Icon(Icons.delete, color: Colors.red),
                     ),

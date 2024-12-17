@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/footer_main.dart';
 
 class DetailFilm extends StatefulWidget {
@@ -15,6 +16,7 @@ class DetailFilm extends StatefulWidget {
   final int votes;
 
   const DetailFilm({
+    Key? key,
     required this.title,
     required this.imageUrl,
     required this.description,
@@ -26,14 +28,57 @@ class DetailFilm extends StatefulWidget {
     required this.duration,
     required this.imdbRating,
     required this.votes,
-  });
+  }) : super(key: key);
 
   @override
   _DetailFilmState createState() => _DetailFilmState();
 }
 
 class _DetailFilmState extends State<DetailFilm> {
-  bool isFavorite = false; // Status favorit
+  bool isFavorite = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  // Mengecek apakah film sudah ada di dalam watchlist
+  Future<void> _checkIfFavorite() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? favoriteMovies = prefs.getStringList('watchlist');
+    if (favoriteMovies != null && favoriteMovies.contains(widget.title)) {
+      setState(() {
+        isFavorite = true;
+      });
+    }
+  }
+
+  // Menambahkan atau menghapus film dari watchlist
+  Future<void> _toggleFavorite() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    List<String>? favoriteMovies = prefs.getStringList('watchlist') ?? [];
+
+    if (isFavorite) {
+      favoriteMovies.remove(widget.title);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${widget.title} removed from favorites!")),
+      );
+    } else {
+      // Menambahkan data film lengkap ke SharedPreferences
+      prefs.setString(widget.title, widget.imageUrl);
+      prefs.setString('${widget.title}_year', widget.year);
+      favoriteMovies.add(widget.title);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${widget.title} added to favorites!")),
+      );
+    }
+
+    await prefs.setStringList('watchlist', favoriteMovies);
+    setState(() {
+      isFavorite = !isFavorite;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +97,6 @@ class _DetailFilmState extends State<DetailFilm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header Section
             Container(
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
@@ -101,7 +145,8 @@ class _DetailFilmState extends State<DetailFilm> {
                           ),
                           Text(
                             "/10",
-                            style: TextStyle(fontSize: 16, color: Colors.white70),
+                            style:
+                                TextStyle(fontSize: 16, color: Colors.white70),
                           ),
                         ],
                       ),
@@ -116,7 +161,6 @@ class _DetailFilmState extends State<DetailFilm> {
               ),
             ),
             SizedBox(height: 32),
-            // Movie Image
             Center(
               child: Image.network(
                 widget.imageUrl,
@@ -126,29 +170,17 @@ class _DetailFilmState extends State<DetailFilm> {
               ),
             ),
             SizedBox(height: 16),
-            // Add to Favorite Button
             Center(
               child: ElevatedButton.icon(
-                onPressed: () {
-                  setState(() {
-                    isFavorite = !isFavorite; // Ubah status favorit
-                  });
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(isFavorite
-                          ? "${widget.title} added to favorites!"
-                          : "${widget.title} removed from favorites!"),
-                    ),
-                  );
-                },
+                onPressed: _toggleFavorite,
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.black, 
+                  foregroundColor: Colors.black,
                   backgroundColor: isFavorite ? Colors.grey : Colors.yellow,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 ),
                 icon: Icon(
                   Icons.star,
@@ -164,7 +196,6 @@ class _DetailFilmState extends State<DetailFilm> {
               ),
             ),
             SizedBox(height: 16),
-            // Movie Description
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
@@ -173,7 +204,6 @@ class _DetailFilmState extends State<DetailFilm> {
               ),
             ),
             SizedBox(height: 16),
-            // Movie Details Section (Genre, Writer, Actors)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
@@ -188,7 +218,7 @@ class _DetailFilmState extends State<DetailFilm> {
               ),
             ),
             SizedBox(height: 160),
-            Footer()
+            Footer(),
           ],
         ),
       ),
@@ -196,7 +226,6 @@ class _DetailFilmState extends State<DetailFilm> {
     );
   }
 
-  // Helper Method for Detail Rows
   Widget _buildDetailRow(String title, String details) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
